@@ -3,158 +3,180 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MANJII PBLOW ONLINE</title>
+    <title>Manjii iOS - Solusi Gaming Premium</title>
     <style>
-        :root { --cyan: #00f2ff; --gold: #ffcc00; --bg: #01080b; --dark: #0a192f; }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
-        body { background-color: var(--bg); color: white; font-family: sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
-        .wallpaper { position: fixed; inset: 0; background-image: url('https://files.catbox.moe/p4m0x7.jpg'); background-size: cover; background-position: center; z-index: -1; filter: brightness(0.2); }
-        .view-container { flex: 1; overflow-y: auto; padding: 20px; display: none; flex-direction: column; }
-        .active-view { display: flex; }
-        .header { padding: 15px; background: rgba(10, 25, 47, 0.95); border-bottom: 2px solid var(--cyan); display: flex; align-items: center; justify-content: space-between; }
-        .msg { max-width: 85%; padding: 12px; border-radius: 15px; font-size: 14px; margin-bottom: 12px; line-height: 1.4; animation: fadeIn 0.3s; word-wrap: break-word; }
-        .tag { font-weight: 900; font-size: 10px; display: block; margin-bottom: 4px; text-transform: uppercase; }
-        .msg-admin { background: rgba(255, 204, 0, 0.1); border: 1px solid var(--gold); align-self: flex-start; }
-        .msg-member { background: rgba(0, 242, 255, 0.1); border: 1px solid var(--cyan); align-self: flex-start; }
-        .is-me { align-self: flex-end !important; background: var(--cyan) !important; color: #000 !important; border: none !important; }
-        .card { background: var(--dark); border: 1px solid rgba(0, 242, 255, 0.3); padding: 15px; border-radius: 12px; margin-bottom: 12px; border-left: 4px solid var(--cyan); }
-        #gate-screen { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 10000; }
-        .gate-box { width: 90%; max-width: 350px; background: var(--dark); padding: 30px; border-radius: 20px; border: 1px solid var(--cyan); text-align: center; }
-        .gate-input { width: 100%; padding: 12px; margin-bottom: 10px; background: #000; border: 1px solid #333; color: white; border-radius: 10px; text-align: center; }
-        .input-box { padding: 15px; background: rgba(2, 12, 27, 0.95); display: flex; gap: 10px; border-top: 1px solid #112240; }
-        #m-in { flex: 1; background: #000; border: 1px solid #333; color: white; padding: 12px; border-radius: 25px; }
-        .bottom-nav { display: grid; grid-template-columns: repeat(4, 1fr); background: #020c1b; padding: 15px 0; border-top: 1px solid rgba(0,242,255,0.2); }
-        .nav-btn { text-align: center; font-size: 10px; font-weight: bold; color: #8892b0; cursor: pointer; }
-        .nav-btn.active { color: var(--cyan); }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        :root { --main: #00e5ff; --bg: #050505; --card: #0d1117; --text: #ffffff; --border: #1a1a1a; }
+        * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; transition: 0.3s; }
+        body { background: var(--bg); color: var(--text); margin: 0; padding: 0; overflow-x: hidden; }
+
+        /* Header */
+        .header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; background: #000; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 1000; }
+        .logo { font-weight: 900; font-size: 18px; color: var(--main); text-transform: uppercase; letter-spacing: 1px; }
+        .burger { cursor: pointer; display: flex; flex-direction: column; gap: 5px; }
+        .burger span { width: 25px; height: 2px; background: var(--main); border-radius: 2px; }
+
+        /* Sidebar Navigation */
+        #sidebar { position: fixed; top: 0; right: -100%; width: 100%; height: 100%; background: #000; z-index: 2000; padding: 50px 20px; border-left: 2px solid var(--main); overflow-y: auto; }
+        #sidebar.active { right: 0; }
+        .nav-item { display: block; padding: 20px; color: white; text-decoration: none; font-weight: bold; font-size: 18px; border-bottom: 1px solid #111; text-align: center; cursor: pointer; }
+
+        /* Page Container */
+        .page { display: none; padding: 20px; animation: fadeIn 0.4s ease; max-width: 600px; margin: 0 auto; }
+        .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Hero Card */
+        .hero-card { background: var(--card); border: 1px solid var(--border); border-radius: 25px; padding: 30px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .q-input { width: 100%; background: #000; border: 2px solid var(--border); border-radius: 18px; padding: 20px; color: var(--main); font-size: 16px; text-align: center; font-weight: 600; margin: 20px 0; outline: none; cursor: pointer; }
+        
+        /* Buttons */
+        .btn { width: 100%; padding: 18px; border-radius: 15px; font-weight: 900; text-transform: uppercase; border: none; cursor: pointer; margin-bottom: 15px; font-size: 12px; display: block; text-align: center; text-decoration: none; }
+        .btn-main { background: var(--main); color: #000; box-shadow: 0 0 15px rgba(0,229,255,0.2); }
+        .btn-outline { background: transparent; border: 1px solid var(--main); color: var(--main); }
+        .btn-wa { background: #25d366; color: #000; }
+        
+        /* Info Box */
+        .info-box { background: #111; padding: 20px; border-radius: 18px; margin-bottom: 20px; border: 1px solid #222; text-align: center; }
+        .info-label { color: var(--main); font-size: 12px; font-weight: 800; text-transform: uppercase; margin-bottom: 15px; display: block; }
+
+        /* Testimonials */
+        .testi-list { text-align: left; max-height: 550px; overflow-y: auto; padding-right: 5px; }
+        .testi-item { background: #0d1117; padding: 15px; border-radius: 15px; margin-bottom: 12px; border-left: 4px solid var(--main); }
+        .testi-user { color: var(--main); font-weight: bold; font-size: 12px; display: block; margin-bottom: 5px; }
+        .testi-text { font-size: 11px; color: #ccc; line-height: 1.4; font-style: italic; }
+
+        /* Bot AI Window */
+        #ai-chat { position: fixed; inset: 0; background: #000; z-index: 4000; display: none; flex-direction: column; }
+        #chat-content { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+        .ai-menu-scroll { padding: 15px; background: #050505; border-top: 1px solid #111; max-height: 280px; overflow-y: auto; display: grid; gap: 8px; }
     </style>
 </head>
 <body>
-    <div class="wallpaper"></div>
-    <div id="gate-screen">
-        <div class="gate-box">
-            <h2 style="color:var(--cyan);">MANJII PBLOW</h2>
-            <input type="text" id="u-in" class="gate-input" placeholder="Nama Member">
-            <input type="password" id="p-in" class="gate-input" placeholder="Admin Key (Jika Ada)">
-            <button onclick="doLogin()" style="width:100%; padding:12px; background:var(--cyan); border:none; border-radius:10px; font-weight:bold; cursor:pointer;">MASUK SEKARANG</button>
-        </div>
-    </div>
 
     <div class="header">
-        <b style="color:var(--cyan);">MANJII PBLOW ONLINE</b>
-        <div id="u-display" style="font-size:11px; border:1px solid var(--cyan); padding:4px 10px; border-radius:20px;">Offline</div>
+        <div class="logo">MANJII <span style="color:white">iOS</span></div>
+        <div class="burger" onclick="toggleSidebar(true)"><span></span><span></span><span></span></div>
     </div>
 
-    <div id="tab-chat" class="view-container active-view"></div>
-    <div id="tab-testi" class="view-container">
-        <h3 style="color:var(--cyan);">TOPUP SUCCESS</h3>
-        <div id="list-testi"></div>
+    <div id="sidebar">
+        <div onclick="toggleSidebar(false)" style="color:var(--main); text-align:right; font-size:30px; margin-bottom:20px; cursor:pointer;">✕</div>
+        <div class="nav-item" onclick="showPage('home')">🏠 BERANDA</div>
+        <div class="nav-item" onclick="showPage('easy-drag')">🚀 PRODUK EASY DRAG</div>
+        <div class="nav-item" onclick="showPage('topup')">💎 TOPUP TERMURAH</div>
+        <div class="nav-item" onclick="showPage('testi')">📸 TESTIMONI & FEEDBACK</div>
+        <div class="nav-item" onclick="showPage('sosmed')">📱 SOSIAL MEDIA</div>
     </div>
-    <div id="tab-profile" class="view-container">
-        <div class="card" style="text-align:center; padding:40px 20px; border-left:1px solid var(--cyan);">
-            <div id="p-ava" style="width:70px; height:70px; background:var(--cyan); border-radius:50%; margin:0 auto 15px; display:flex; align-items:center; justify-content:center; color:#000; font-size:25px; font-weight:bold;">?</div>
-            <h2 id="p-name" style="margin:5px 0; color:var(--cyan);">USER</h2>
-            <p id="p-role" style="color:var(--gold); font-size:13px;">MEMBER PREMIUM</p>
+
+    <div id="home" class="page active">
+        <div class="hero-card">
+            <h2 style="margin:0; color:var(--main);">MANJII iOS V3</h2>
+            <p style="font-size:11px; color:#666;">Pusat Layanan Game & Tools iOS Terpercaya</p>
+            <input type="text" class="q-input" placeholder="AJUKAN PERTANYAAN ANDA" onclick="openAI()" readonly>
+            <button class="btn btn-main" onclick="openAI()">TANYA BOT AI (KONSULTASI)</button>
         </div>
     </div>
 
-    <div id="input-area" class="input-box">
-        <input type="text" id="m-in" placeholder="Ketik pesan disini..." autocomplete="off">
-        <button id="send-btn" onclick="sendMessage()" style="background:var(--cyan); border:none; width:45px; height:45px; border-radius:50%; cursor:pointer;">➤</button>
+    <div id="easy-drag" class="page">
+        <h3 style="color:var(--main); text-align:center;">PRODUK EASY DRAG iOS</h3>
+        <div class="info-box">
+            <span class="info-label">PILIH MASA AKTIF KEY</span>
+            <button class="btn btn-outline" onclick="order('Easy Drag 1 Day')">🛒 BELI 1 DAY - RP 50.000</button>
+            <button class="btn btn-outline" onclick="order('Easy Drag 7 Day')">🛒 BELI 7 DAY - RP 100.000</button>
+            <button class="btn btn-main" onclick="order('Easy Drag 30 Day')">🛒 BELI 30 DAY - RP 150.000</button>
+        </div>
+        <button class="btn btn-outline" style="border-color:#333; color:#666;" onclick="showPage('home')">KEMBALI</button>
     </div>
 
-    <div class="bottom-nav">
-        <div class="nav-btn active" onclick="switchTab('chat', this)">CHAT</div>
-        <div class="nav-btn" onclick="switchTab('testi', this)">TESTI</div>
-        <div class="nav-btn" onclick="switchTab('profile', this)">PROFILE</div>
-        <div class="nav-btn" onclick="window.open('https://manjiimarket.com')">WEB</div>
+    <div id="topup" class="page">
+        <div class="hero-card">
+            <h3 style="color:var(--main);">TOPUP DETIKAN</h3>
+            <p style="font-size:13px; line-height:1.6; color:#bbb;">Website topup dengan sistem pengiriman otomatis tercepat. Harga murah & proses masuk dalam hitungan <b>DETIK</b>.</p>
+            <a href="https://manjiimarket.com" class="btn btn-main">MENUJU MANJIIMARKET.COM</a>
+            <button class="btn btn-outline" onclick="showPage('home')">KEMBALI</button>
+        </div>
+    </div>
+
+    <div id="sosmed" class="page">
+        <h3 style="color:var(--main); text-align:center;">SOCIAL MEDIA</h3>
+        <div class="info-box">
+            <a href="https://www.tiktok.com/@xandermanji" target="_blank" class="btn btn-outline">🎵 TIKTOK 1: @xandermanji</a>
+            <a href="https://www.tiktok.com/@manjiixit" target="_blank" class="btn btn-outline">🎵 TIKTOK 2: @manjiixit</a>
+            <a href="https://wa.me/6283845203074" target="_blank" class="btn btn-wa">💬 WHATSAPP ADMIN</a>
+        </div>
+        <button class="btn btn-outline" onclick="showPage('home')">KEMBALI</button>
+    </div>
+
+    <div id="testi" class="page">
+        <h3 style="color:var(--main); text-align:center;">FEEDBACK PELANGGAN</h3>
+        <div class="testi-list">
+            <div class="testi-item"><span class="testi-user">@Raka_FF</span><span class="testi-text">"Easy Drag nempel parah, headshot rate naik 80%. Worth it bgt!"</span></div>
+            <div class="testi-item"><span class="testi-user">@Sultan_iOs</span><span class="testi-text">"Topup di Manjiimarket beneran detikan. Sukses terus Manjii iOS!"</span></div>
+            <div class="testi-item"><span class="testi-user">@Dev_Apple</span><span class="testi-text">"Sertifikat iSign aman sudah 8 bulan tanpa revoke. Terpercaya."</span></div>
+            <div class="testi-item"><span class="testi-user">@Bocil_Epic</span><span class="testi-text">"Baru nyoba sehari langsung auto sub yang sebulan. Licin bgt layarnya!"</span></div>
+            <div class="testi-item"><span class="testi-user">@Pro_Player</span><span class="testi-text">"Modul sensitivitas paling aman buat turnamen. Nggak ke-detect."</span></div>
+            <div class="testi-item"><span class="testi-user">@Dina_Games</span><span class="testi-text">"CS ramah, dibantu instalasi sampai beres. Best service!"</span></div>
+            <div class="testi-item"><span class="testi-user">@User_Legend</span><span class="testi-text">"Harganya paling murah se-indo dengan fitur se-premium ini."</span></div>
+            <div class="testi-item"><span class="testi-user">@FF_Mania</span><span class="testi-text">"Gak nyesel beli di sini, beneran nambah skill drag shot."</span></div>
+        </div>
+        <button class="btn btn-outline" style="margin-top:20px;" onclick="showPage('home')">KEMBALI</button>
+    </div>
+
+    <div id="ai-chat">
+        <div class="header">
+            <span style="color:var(--main); font-weight:bold;">BOT AI MANJII iOS</span>
+            <span onclick="closeAI()" style="color:white; cursor:pointer;">✕</span>
+        </div>
+        <div id="chat-content"></div>
+        <div class="ai-menu-scroll">
+            <p style="font-size:10px; color:#444; text-align:center;">KLIK UNTUK JAWABAN:</p>
+            <button class="btn btn-outline" style="padding:12px;" onclick="ask('apa itu easy drag')">🚀 Apa itu Easy Drag iOS?</button>
+            <button class="btn btn-outline" style="padding:12px;" onclick="ask('pricelist')">💰 Pricelist Lengkap</button>
+            <button class="btn btn-outline" style="padding:12px;" onclick="ask('aman')">🛡️ Apakah Aman Akun Utama?</button>
+            <button class="btn btn-outline" style="padding:12px;" onclick="ask('topup info')">⚡ Info Topup Detikan</button>
+            <button class="btn btn-outline" style="padding:12px;" onclick="ask('isign')">🛠️ Info iSign / ESign VIP</button>
+            <button class="btn btn-outline" style="padding:12px;" onclick="ask('bayar')">💳 Metode Pembayaran</button>
+            <button class="btn btn-outline" style="padding:12px;" onclick="ask('error')">⚠️ Garansi & Kendala</button>
+        </div>
     </div>
 
     <script>
-        // Database baru dengan akses terbuka
-        const DB_URL = "https://manjii-pblow-default-rtdb.firebaseio.com/chats.json";
-        let myName = "";
-        let myRole = "member";
+        function toggleSidebar(s) { document.getElementById('sidebar').classList.toggle('active', s); }
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            toggleSidebar(false);
+            window.scrollTo(0,0);
+        }
+        function openAI() { document.getElementById('ai-chat').style.display = 'flex'; }
+        function closeAI() { document.getElementById('ai-chat').style.display = 'none'; }
 
-        function doLogin() {
-            let u = document.getElementById('u-in').value.trim();
-            if(!u) return alert("Wajib isi nama!");
-            myName = u;
-            if(document.getElementById('p-in').value === "MANJII777") myRole = "admin";
-            document.getElementById('u-display').innerText = myName;
-            document.getElementById('p-name').innerText = myName.toUpperCase();
-            document.getElementById('p-role').innerText = myRole === 'admin' ? "OWNER / ADMIN" : "MEMBER PREMIUM";
-            document.getElementById('p-ava').innerText = myName[0].toUpperCase();
-            document.getElementById('gate-screen').style.display = 'none';
-            loadMessages();
-            setInterval(loadMessages, 3000);
-            startTesti();
+        function addChat(type, text) {
+            const chat = document.getElementById('chat-content');
+            const div = document.createElement('div');
+            div.style = type === 'user' ? 
+                'background:var(--main); color:black; padding:12px; border-radius:15px; align-self:flex-end; font-size:12px; font-weight:bold; margin-left:15%; margin-bottom:10px;' : 
+                'background:#111; color:#ddd; padding:12px; border-radius:15px; font-size:12px; border:1px solid #222; margin-right:10%; margin-bottom:10px;';
+            div.innerHTML = text;
+            chat.appendChild(div);
+            chat.scrollTop = chat.scrollHeight;
         }
 
-        function switchTab(t, e) {
-            document.querySelectorAll('.view-container').forEach(v => v.classList.remove('active-view'));
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('tab-' + t).classList.add('active-view');
-            e.classList.add('active');
-            document.getElementById('input-area').style.display = (t === 'chat') ? 'flex' : 'none';
+        function ask(type) {
+            let u = "", b = "";
+            if(type === 'apa itu easy drag') { u = "Apa itu Easy Drag?"; b = "<b>EASY DRAG iOS</b> adalah modul VIP untuk mengoptimalkan sensitivitas layar khusus headshot. Aman 100%."; }
+            else if(type === 'pricelist') { u = "Pricelist lengkap?"; b = "1D: 50k, 7D: 100k, 30D: 150k. Sertif iSign: 120k/thn."; }
+            else if(type === 'aman') { u = "Aman akun utama?"; b = "<b>100% Aman.</b> Ini optimasi sistem, bukan cheat. Anti-Banned."; }
+            else if(type === 'topup info') { u = "Keunggulan Topup?"; b = "Di <b>manjiimarket.com</b> proses otomatis dalam hitungan DETIK."; }
+            else if(type === 'isign') { u = "Apa itu iSign VIP?"; b = "Sertifikat untuk install aplikasi MOD tanpa kena blokir Apple selama 1 tahun."; }
+            else if(type === 'bayar') { u = "Metode bayar?"; b = "QRIS All Payment, Dana, OVO, ShopeePay, & Bank."; }
+            else if(type === 'error') { u = "Jika ada kendala?"; b = "Kami beri <b>Full Garansi</b>. Hubungi WA Admin jika ada masalah."; }
+
+            addChat('user', u);
+            setTimeout(() => { addChat('bot', b); }, 500);
         }
 
-        async function sendMessage() {
-            const input = document.getElementById('m-in');
-            const btn = document.getElementById('send-btn');
-            const txt = input.value.trim();
-            if(!txt) return;
-
-            btn.disabled = true;
-            input.placeholder = "Mengirim...";
-            
-            const payload = { user: myName, role: myRole, text: txt, time: Date.now() };
-
-            try {
-                // Gunakan fetch dengan mode simpel untuk bypass CORS
-                await fetch(DB_URL, {
-                    method: 'POST',
-                    mode: 'cors',
-                    body: JSON.stringify(payload)
-                });
-                input.value = "";
-                loadMessages();
-            } catch(e) {
-                console.log(e);
-            } finally {
-                btn.disabled = false;
-                input.placeholder = "Ketik pesan disini...";
-            }
-        }
-
-        async function loadMessages() {
-            try {
-                const res = await fetch(DB_URL);
-                const data = await res.json();
-                const box = document.getElementById('tab-chat');
-                if(!data) return;
-                let html = "";
-                const sorted = Object.values(data).filter(m => m.user && m.text).sort((a,b) => a.time - b.time);
-                sorted.slice(-40).forEach(m => {
-                    let isMe = (m.user === myName) ? "is-me" : "";
-                    let style = (m.role === 'admin') ? "msg-admin" : "msg-member";
-                    html += `<div class="msg ${style} ${isMe}"><span class="tag">${m.role==='admin'?'👑':'👤'} ${m.user}</span>${m.text}</div>`;
-                });
-                box.innerHTML = html;
-                box.scrollTop = box.scrollHeight;
-            } catch(e) {}
-        }
-
-        function startTesti() {
-            const list = document.getElementById('list-testi');
-            const names = ["Rizky", "Putri", "Dika", "Sultan", "Bagas"];
-            const items = ["86 Diamonds MLBB", "Weekly Pass ML", "355 Diamonds FF", "60 Crystals Genshin"];
-            setInterval(() => {
-                const d = document.createElement('div');
-                d.className = "card";
-                d.innerHTML = `<b>${names[Math.floor(Math.random()*5)]}</b> sukses topup <b>${items[Math.floor(Math.random()*4)]}</b> <br> <small style="color:var(--cyan)">Baru saja • Payment Success</small>`;
-                list.prepend(d);
-            }, 8000);
+        function order(name) {
+            window.location.href = "https://wa.me/6283845203074?text=Halo+Manjii+iOS,+saya+ingin+order+" + encodeURIComponent(name);
         }
     </script>
 </body>
