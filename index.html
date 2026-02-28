@@ -9,61 +9,47 @@
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
         body { background-color: var(--bg); color: white; font-family: sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
         .wallpaper { position: fixed; inset: 0; background-image: url('https://files.catbox.moe/p4m0x7.jpg'); background-size: cover; background-position: center; z-index: -1; filter: brightness(0.2); }
-        
-        /* Layout Tab */
         .view-container { flex: 1; overflow-y: auto; padding: 20px; display: none; flex-direction: column; }
         .active-view { display: flex; }
         .header { padding: 15px; background: rgba(10, 25, 47, 0.95); border-bottom: 2px solid var(--cyan); display: flex; align-items: center; justify-content: space-between; }
-        
-        /* Chat Style */
         .msg { max-width: 85%; padding: 12px; border-radius: 15px; font-size: 14px; margin-bottom: 12px; line-height: 1.4; animation: fadeIn 0.3s; word-wrap: break-word; }
         .tag { font-weight: 900; font-size: 10px; display: block; margin-bottom: 4px; text-transform: uppercase; }
         .msg-admin { background: rgba(255, 204, 0, 0.1); border: 1px solid var(--gold); align-self: flex-start; }
         .msg-member { background: rgba(0, 242, 255, 0.1); border: 1px solid var(--cyan); align-self: flex-start; }
         .is-me { align-self: flex-end !important; background: var(--cyan) !important; color: #000 !important; border: none !important; }
-
-        /* Card Testi & Profile */
         .card { background: var(--dark); border: 1px solid rgba(0, 242, 255, 0.3); padding: 15px; border-radius: 12px; margin-bottom: 12px; border-left: 4px solid var(--cyan); }
-
-        /* Gate/Login */
         #gate-screen { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 10000; }
         .gate-box { width: 90%; max-width: 350px; background: var(--dark); padding: 30px; border-radius: 20px; border: 1px solid var(--cyan); text-align: center; }
         .gate-input { width: 100%; padding: 12px; margin-bottom: 10px; background: #000; border: 1px solid #333; color: white; border-radius: 10px; text-align: center; }
-
-        /* Navigation & Input */
         .input-box { padding: 15px; background: rgba(2, 12, 27, 0.95); display: flex; gap: 10px; border-top: 1px solid #112240; }
         #m-in { flex: 1; background: #000; border: 1px solid #333; color: white; padding: 12px; border-radius: 25px; }
         .bottom-nav { display: grid; grid-template-columns: repeat(4, 1fr); background: #020c1b; padding: 15px 0; border-top: 1px solid rgba(0,242,255,0.2); }
         .nav-btn { text-align: center; font-size: 10px; font-weight: bold; color: #8892b0; cursor: pointer; }
         .nav-btn.active { color: var(--cyan); }
-
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
     <div class="wallpaper"></div>
-
     <div id="gate-screen">
         <div class="gate-box">
             <h2 style="color:var(--cyan);">MANJII PBLOW</h2>
-            <input type="text" id="u-in" class="gate-input" placeholder="Nama Anda">
-            <input type="password" id="p-in" class="gate-input" placeholder="Admin Key (Optional)">
-            <button onclick="doLogin()" style="width:100%; padding:12px; background:var(--cyan); border:none; border-radius:10px; font-weight:bold; cursor:pointer;">MASUK ONLINE</button>
+            <input type="text" id="u-in" class="gate-input" placeholder="Nama Member">
+            <input type="password" id="p-in" class="gate-input" placeholder="Admin Key (Jika Ada)">
+            <button onclick="doLogin()" style="width:100%; padding:12px; background:var(--cyan); border:none; border-radius:10px; font-weight:bold; cursor:pointer;">MASUK SEKARANG</button>
         </div>
     </div>
 
     <div class="header">
-        <b style="color:var(--cyan);">MANJII PBLOW</b>
+        <b style="color:var(--cyan);">MANJII PBLOW ONLINE</b>
         <div id="u-display" style="font-size:11px; border:1px solid var(--cyan); padding:4px 10px; border-radius:20px;">Offline</div>
     </div>
 
     <div id="tab-chat" class="view-container active-view"></div>
-
     <div id="tab-testi" class="view-container">
-        <h3 style="color:var(--cyan); margin-bottom:20px;">LIVE TOPUP DIAMOND</h3>
+        <h3 style="color:var(--cyan);">TOPUP SUCCESS</h3>
         <div id="list-testi"></div>
     </div>
-
     <div id="tab-profile" class="view-container">
         <div class="card" style="text-align:center; padding:40px 20px; border-left:1px solid var(--cyan);">
             <div id="p-ava" style="width:70px; height:70px; background:var(--cyan); border-radius:50%; margin:0 auto 15px; display:flex; align-items:center; justify-content:center; color:#000; font-size:25px; font-weight:bold;">?</div>
@@ -73,8 +59,8 @@
     </div>
 
     <div id="input-area" class="input-box">
-        <input type="text" id="m-in" placeholder="Tulis pesan..." onkeypress="if(event.key==='Enter')sendMessage()">
-        <button onclick="sendMessage()" style="background:var(--cyan); border:none; width:45px; height:45px; border-radius:50%; cursor:pointer;">➤</button>
+        <input type="text" id="m-in" placeholder="Ketik pesan disini..." autocomplete="off">
+        <button id="send-btn" onclick="sendMessage()" style="background:var(--cyan); border:none; width:45px; height:45px; border-radius:50%; cursor:pointer;">➤</button>
     </div>
 
     <div class="bottom-nav">
@@ -85,58 +71,59 @@
     </div>
 
     <script>
-        // Database baru untuk menghindari error 'undefined'
-        const DB_URL = "https://manji-project-default-rtdb.firebaseio.com/messages.json";
+        // Database baru dengan akses terbuka
+        const DB_URL = "https://manjii-pblow-default-rtdb.firebaseio.com/chats.json";
         let myName = "";
         let myRole = "member";
 
         function doLogin() {
             let u = document.getElementById('u-in').value.trim();
-            let p = document.getElementById('p-in').value;
-            if(!u) return alert("Masukkan nama!");
-            
+            if(!u) return alert("Wajib isi nama!");
             myName = u;
-            if(p === "MANJII777") myRole = "admin";
-            
-            document.getElementById('u-display').innerText = (myRole === 'admin' ? "👑 " : "") + myName;
+            if(document.getElementById('p-in').value === "MANJII777") myRole = "admin";
+            document.getElementById('u-display').innerText = myName;
             document.getElementById('p-name').innerText = myName.toUpperCase();
-            document.getElementById('p-role').innerText = myRole === 'admin' ? "ADMIN / OWNER" : "MEMBER PREMIUM";
+            document.getElementById('p-role').innerText = myRole === 'admin' ? "OWNER / ADMIN" : "MEMBER PREMIUM";
             document.getElementById('p-ava').innerText = myName[0].toUpperCase();
-            
             document.getElementById('gate-screen').style.display = 'none';
             loadMessages();
             setInterval(loadMessages, 3000);
-            startTestiEngine();
+            startTesti();
         }
 
-        function switchTab(tab, el) {
+        function switchTab(t, e) {
             document.querySelectorAll('.view-container').forEach(v => v.classList.remove('active-view'));
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('tab-' + tab).classList.add('active-view');
-            el.classList.add('active');
-            document.getElementById('input-area').style.display = (tab === 'chat') ? 'flex' : 'none';
+            document.getElementById('tab-' + t).classList.add('active-view');
+            e.classList.add('active');
+            document.getElementById('input-area').style.display = (t === 'chat') ? 'flex' : 'none';
         }
 
         async function sendMessage() {
-            let input = document.getElementById('m-in');
-            let txt = input.value.trim();
+            const input = document.getElementById('m-in');
+            const btn = document.getElementById('send-btn');
+            const txt = input.value.trim();
             if(!txt) return;
 
-            let data = { user: myName, role: myRole, text: txt, time: Date.now() };
-            input.value = "Kirim...";
+            btn.disabled = true;
+            input.placeholder = "Mengirim...";
+            
+            const payload = { user: myName, role: myRole, text: txt, time: Date.now() };
 
             try {
-                const res = await fetch(DB_URL, {
+                // Gunakan fetch dengan mode simpel untuk bypass CORS
+                await fetch(DB_URL, {
                     method: 'POST',
-                    body: JSON.stringify(data)
+                    mode: 'cors',
+                    body: JSON.stringify(payload)
                 });
-                if(res.ok) {
-                    input.value = "";
-                    loadMessages();
-                }
+                input.value = "";
+                loadMessages();
             } catch(e) {
-                alert("Gagal kirim! Coba gunakan kuota internet (bukan WiFi).");
-                input.value = txt;
+                console.log(e);
+            } finally {
+                btn.disabled = false;
+                input.placeholder = "Ketik pesan disini...";
             }
         }
 
@@ -146,13 +133,8 @@
                 const data = await res.json();
                 const box = document.getElementById('tab-chat');
                 if(!data) return;
-
                 let html = "";
-                // Sortir dan bersihkan data undefined
-                const sorted = Object.values(data)
-                    .filter(m => m.user && m.text)
-                    .sort((a,b) => a.time - b.time);
-
+                const sorted = Object.values(data).filter(m => m.user && m.text).sort((a,b) => a.time - b.time);
                 sorted.slice(-40).forEach(m => {
                     let isMe = (m.user === myName) ? "is-me" : "";
                     let style = (m.role === 'admin') ? "msg-admin" : "msg-member";
@@ -163,31 +145,16 @@
             } catch(e) {}
         }
 
-        function startTestiEngine() {
+        function startTesti() {
             const list = document.getElementById('list-testi');
-            const users = ["Rizky", "Putri", "Dika", "Vina", "Sultan", "Bagas", "Amel"];
-            const games = [
-                "86 Diamonds MLBB", 
-                "172 Diamonds MLBB", 
-                "Weekly Diamond Pass ML", 
-                "140 Diamonds Free Fire", 
-                "355 Diamonds Free Fire", 
-                "60 Crystals Genshin Impact"
-            ];
-            
+            const names = ["Rizky", "Putri", "Dika", "Sultan", "Bagas"];
+            const items = ["86 Diamonds MLBB", "Weekly Pass ML", "355 Diamonds FF", "60 Crystals Genshin"];
             setInterval(() => {
-                const u = users[Math.floor(Math.random()*users.length)];
-                const g = games[Math.floor(Math.random()*games.length)];
                 const d = document.createElement('div');
                 d.className = "card";
-                d.innerHTML = `
-                    <div style="font-size:11px; color:var(--cyan); margin-bottom:5px;">✓ SUCCESSFUL TRANSACTION</div>
-                    <b>${u}</b> baru saja membeli <b>${g}</b>
-                    <div style="font-size:10px; color:#555; margin-top:5px;">Metode: QRIS Otomatis</div>
-                `;
+                d.innerHTML = `<b>${names[Math.floor(Math.random()*5)]}</b> sukses topup <b>${items[Math.floor(Math.random()*4)]}</b> <br> <small style="color:var(--cyan)">Baru saja • Payment Success</small>`;
                 list.prepend(d);
-                if(list.children.length > 5) list.lastChild.remove();
-            }, 7000);
+            }, 8000);
         }
     </script>
 </body>
